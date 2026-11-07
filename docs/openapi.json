@@ -1,0 +1,6368 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "HUB SCHOOL API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health Check",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Health Check Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Get Authenticated User",
+        "operationId": "get_authenticated_user_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Get Authenticated User Auth Me Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/semestres": {
+      "get": {
+        "tags": [
+          "semestres"
+        ],
+        "summary": "Semestres Listing",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "semestres_listing_semestres_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "disciplina_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Disciplina Id"
+            }
+          },
+          {
+            "name": "semestre_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Semestre Id"
+            }
+          },
+          {
+            "name": "evento_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Evento Id"
+            }
+          },
+          {
+            "name": "texto",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Texto"
+            }
+          },
+          {
+            "name": "tipo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "prova",
+                    "trabalho",
+                    "apresentacao",
+                    "aula",
+                    "evento"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tipo"
+            }
+          },
+          {
+            "name": "inicio",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Inicio"
+            }
+          },
+          {
+            "name": "fim",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fim"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Semester"
+                  },
+                  "title": "Response Semestres Listing Semestres Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "semestres"
+        ],
+        "summary": "Semestres Create",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "semestres_create_semestres_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemesterInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Semester"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/semestres/{record_id}": {
+      "get": {
+        "tags": [
+          "semestres"
+        ],
+        "summary": "Semestres Read",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "semestres_read_semestres__record_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Semester"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "semestres"
+        ],
+        "summary": "Semestres Update",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "semestres_update_semestres__record_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemesterInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Semester"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docentes": {
+      "get": {
+        "tags": [
+          "docentes"
+        ],
+        "summary": "Docentes Listing",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "docentes_listing_docentes_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "disciplina_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Disciplina Id"
+            }
+          },
+          {
+            "name": "semestre_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Semestre Id"
+            }
+          },
+          {
+            "name": "evento_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Evento Id"
+            }
+          },
+          {
+            "name": "texto",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Texto"
+            }
+          },
+          {
+            "name": "tipo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "prova",
+                    "trabalho",
+                    "apresentacao",
+                    "aula",
+                    "evento"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tipo"
+            }
+          },
+          {
+            "name": "inicio",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Inicio"
+            }
+          },
+          {
+            "name": "fim",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fim"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Teacher"
+                  },
+                  "title": "Response Docentes Listing Docentes Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "docentes"
+        ],
+        "summary": "Docentes Create",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "docentes_create_docentes_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TeacherInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Teacher"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docentes/{record_id}": {
+      "get": {
+        "tags": [
+          "docentes"
+        ],
+        "summary": "Docentes Read",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "docentes_read_docentes__record_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Teacher"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "docentes"
+        ],
+        "summary": "Docentes Update",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "docentes_update_docentes__record_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TeacherInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Teacher"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "docentes"
+        ],
+        "summary": "Docentes Delete",
+        "description": "Exclui recurso próprio sem vínculos dependentes.",
+        "operationId": "docentes_delete_docentes__record_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disciplinas": {
+      "get": {
+        "tags": [
+          "disciplinas"
+        ],
+        "summary": "Disciplinas Listing",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "disciplinas_listing_disciplinas_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "disciplina_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Disciplina Id"
+            }
+          },
+          {
+            "name": "semestre_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Semestre Id"
+            }
+          },
+          {
+            "name": "evento_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Evento Id"
+            }
+          },
+          {
+            "name": "texto",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Texto"
+            }
+          },
+          {
+            "name": "tipo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "prova",
+                    "trabalho",
+                    "apresentacao",
+                    "aula",
+                    "evento"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tipo"
+            }
+          },
+          {
+            "name": "inicio",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Inicio"
+            }
+          },
+          {
+            "name": "fim",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fim"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Subject"
+                  },
+                  "title": "Response Disciplinas Listing Disciplinas Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "disciplinas"
+        ],
+        "summary": "Disciplinas Create",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "disciplinas_create_disciplinas_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubjectInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Subject"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disciplinas/{record_id}": {
+      "get": {
+        "tags": [
+          "disciplinas"
+        ],
+        "summary": "Disciplinas Read",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "disciplinas_read_disciplinas__record_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Subject"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "disciplinas"
+        ],
+        "summary": "Disciplinas Update",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "disciplinas_update_disciplinas__record_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubjectInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Subject"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/horarios": {
+      "get": {
+        "tags": [
+          "horarios"
+        ],
+        "summary": "Horarios Listing",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "horarios_listing_horarios_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "disciplina_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Disciplina Id"
+            }
+          },
+          {
+            "name": "semestre_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Semestre Id"
+            }
+          },
+          {
+            "name": "evento_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Evento Id"
+            }
+          },
+          {
+            "name": "texto",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Texto"
+            }
+          },
+          {
+            "name": "tipo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "prova",
+                    "trabalho",
+                    "apresentacao",
+                    "aula",
+                    "evento"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tipo"
+            }
+          },
+          {
+            "name": "inicio",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Inicio"
+            }
+          },
+          {
+            "name": "fim",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fim"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Schedule"
+                  },
+                  "title": "Response Horarios Listing Horarios Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "horarios"
+        ],
+        "summary": "Horarios Create",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "horarios_create_horarios_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScheduleInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schedule"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/horarios/{record_id}": {
+      "get": {
+        "tags": [
+          "horarios"
+        ],
+        "summary": "Horarios Read",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "horarios_read_horarios__record_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schedule"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "horarios"
+        ],
+        "summary": "Horarios Update",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "horarios_update_horarios__record_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScheduleInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Schedule"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/frequencias": {
+      "get": {
+        "tags": [
+          "frequencias"
+        ],
+        "summary": "Frequencias Listing",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "frequencias_listing_frequencias_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "disciplina_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Disciplina Id"
+            }
+          },
+          {
+            "name": "semestre_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Semestre Id"
+            }
+          },
+          {
+            "name": "evento_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Evento Id"
+            }
+          },
+          {
+            "name": "texto",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Texto"
+            }
+          },
+          {
+            "name": "tipo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "prova",
+                    "trabalho",
+                    "apresentacao",
+                    "aula",
+                    "evento"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tipo"
+            }
+          },
+          {
+            "name": "inicio",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Inicio"
+            }
+          },
+          {
+            "name": "fim",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fim"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Attendance"
+                  },
+                  "title": "Response Frequencias Listing Frequencias Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "frequencias"
+        ],
+        "summary": "Frequencias Create",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "frequencias_create_frequencias_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AttendanceInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attendance"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/frequencias/{record_id}": {
+      "get": {
+        "tags": [
+          "frequencias"
+        ],
+        "summary": "Frequencias Read",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "frequencias_read_frequencias__record_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attendance"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "frequencias"
+        ],
+        "summary": "Frequencias Update",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "frequencias_update_frequencias__record_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AttendanceInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attendance"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/avaliacoes": {
+      "get": {
+        "tags": [
+          "avaliacoes"
+        ],
+        "summary": "Avaliacoes Listing",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "avaliacoes_listing_avaliacoes_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "disciplina_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Disciplina Id"
+            }
+          },
+          {
+            "name": "semestre_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Semestre Id"
+            }
+          },
+          {
+            "name": "evento_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Evento Id"
+            }
+          },
+          {
+            "name": "texto",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Texto"
+            }
+          },
+          {
+            "name": "tipo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "prova",
+                    "trabalho",
+                    "apresentacao",
+                    "aula",
+                    "evento"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tipo"
+            }
+          },
+          {
+            "name": "inicio",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Inicio"
+            }
+          },
+          {
+            "name": "fim",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fim"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Assessment"
+                  },
+                  "title": "Response Avaliacoes Listing Avaliacoes Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "avaliacoes"
+        ],
+        "summary": "Avaliacoes Create",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "avaliacoes_create_avaliacoes_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssessmentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Assessment"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/avaliacoes/{record_id}": {
+      "get": {
+        "tags": [
+          "avaliacoes"
+        ],
+        "summary": "Avaliacoes Read",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "avaliacoes_read_avaliacoes__record_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Assessment"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "avaliacoes"
+        ],
+        "summary": "Avaliacoes Update",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "avaliacoes_update_avaliacoes__record_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssessmentInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Assessment"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/eventos": {
+      "get": {
+        "tags": [
+          "eventos"
+        ],
+        "summary": "Eventos Listing",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "eventos_listing_eventos_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "disciplina_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Disciplina Id"
+            }
+          },
+          {
+            "name": "semestre_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Semestre Id"
+            }
+          },
+          {
+            "name": "evento_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Evento Id"
+            }
+          },
+          {
+            "name": "texto",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Texto"
+            }
+          },
+          {
+            "name": "tipo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "prova",
+                    "trabalho",
+                    "apresentacao",
+                    "aula",
+                    "evento"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tipo"
+            }
+          },
+          {
+            "name": "inicio",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Inicio"
+            }
+          },
+          {
+            "name": "fim",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fim"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  },
+                  "title": "Response Eventos Listing Eventos Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "eventos"
+        ],
+        "summary": "Eventos Create",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "eventos_create_eventos_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/eventos/{record_id}": {
+      "get": {
+        "tags": [
+          "eventos"
+        ],
+        "summary": "Eventos Read",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "eventos_read_eventos__record_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "eventos"
+        ],
+        "summary": "Eventos Update",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "eventos_update_eventos__record_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/anotacoes": {
+      "get": {
+        "tags": [
+          "anotacoes"
+        ],
+        "summary": "Anotacoes Listing",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "anotacoes_listing_anotacoes_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "disciplina_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Disciplina Id"
+            }
+          },
+          {
+            "name": "semestre_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Semestre Id"
+            }
+          },
+          {
+            "name": "evento_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Evento Id"
+            }
+          },
+          {
+            "name": "texto",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 500
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Texto"
+            }
+          },
+          {
+            "name": "tipo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "prova",
+                    "trabalho",
+                    "apresentacao",
+                    "aula",
+                    "evento"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Tipo"
+            }
+          },
+          {
+            "name": "inicio",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Inicio"
+            }
+          },
+          {
+            "name": "fim",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fim"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Note"
+                  },
+                  "title": "Response Anotacoes Listing Anotacoes Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "anotacoes"
+        ],
+        "summary": "Anotacoes Create",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "anotacoes_create_anotacoes_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Note"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/anotacoes/{record_id}": {
+      "get": {
+        "tags": [
+          "anotacoes"
+        ],
+        "summary": "Anotacoes Read",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "anotacoes_read_anotacoes__record_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Note"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "anotacoes"
+        ],
+        "summary": "Anotacoes Update",
+        "description": "Dados privados do estudante autenticado. PUT substitui todos os campos editáveis. Persistência real pendente; retorna 503 até integração.",
+        "operationId": "anotacoes_update_anotacoes__record_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoteInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Note"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "anotacoes"
+        ],
+        "summary": "Anotacoes Delete",
+        "description": "Exclui recurso próprio sem vínculos dependentes.",
+        "operationId": "anotacoes_delete_anotacoes__record_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disciplinas/{record_id}/resumo-frequencia": {
+      "get": {
+        "tags": [
+          "frequencias"
+        ],
+        "summary": "Attendance Summary",
+        "operationId": "attendance_summary_disciplinas__record_id__resumo_frequencia_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttendanceSummary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/disciplinas/{record_id}/media": {
+      "get": {
+        "tags": [
+          "avaliacoes"
+        ],
+        "summary": "Subject Average",
+        "description": "Média parcial apenas das notas lançadas; notas nulas não equivalem a zero.",
+        "operationId": "subject_average_disciplinas__record_id__media_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "record_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Record Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Average"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/primeiro-acesso": {
+      "get": {
+        "tags": [
+          "primeiro-acesso"
+        ],
+        "summary": "Onboarding",
+        "description": "Retoma dados salvos. Não inventa etapas nem marcador de conclusão.",
+        "operationId": "onboarding_primeiro_acesso_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Onboarding"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/calendario-academico": {
+      "get": {
+        "tags": [
+          "agenda"
+        ],
+        "summary": "Calendar",
+        "operationId": "calendar_calendario_academico_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "inicio",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Inicio"
+            }
+          },
+          {
+            "name": "fim",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Fim"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CalendarItem"
+                  },
+                  "title": "Response Calendar Calendario Academico Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/aulas-recorrentes": {
+      "get": {
+        "tags": [
+          "agenda"
+        ],
+        "summary": "Recurring Lessons",
+        "description": "Projeção dos horários dentro do semestre, sem gravar eventos. Não exclui feriados automaticamente: política de cancelamento pendente. Horários locais.",
+        "operationId": "recurring_lessons_aulas_recorrentes_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "inicio",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "Inicio"
+            }
+          },
+          {
+            "name": "fim",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "Fim"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Lesson"
+                  },
+                  "title": "Response Recurring Lessons Aulas Recorrentes Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito de estado ou vínculos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Persistência não integrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/calculos/aprovacao": {
+      "post": {
+        "tags": [
+          "calculos"
+        ],
+        "summary": "Approval",
+        "description": "Simulação para uma avaliação restante. A escala máxima é informada explicitamente. Não grava dados.",
+        "operationId": "approval_calculos_aprovacao_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalculationInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calculation"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Integração indisponível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/calculos/situacao": {
+      "post": {
+        "tags": [
+          "calculos"
+        ],
+        "summary": "Academic Situation",
+        "description": "Avalia RN03 sem inventar precedência: critérios conflitantes ou insuficientes retornam situação nula.",
+        "operationId": "academic_situation_calculos_situacao_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SituationInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Situation"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Integração indisponível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/eventos/{event_id}/previa-lembretes": {
+      "post": {
+        "tags": [
+          "notificacoes"
+        ],
+        "summary": "Reminder Preview",
+        "description": "Prévia de datas, sem agendar nem enviar e-mails. Padrão: 3 e 1 dias antes.",
+        "operationId": "reminder_preview_eventos__event_id__previa_lembretes_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Event Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReminderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Reminder"
+                  },
+                  "title": "Response Reminder Preview Eventos  Event Id  Previa Lembretes Post"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Integração indisponível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/conta/exportacao": {
+      "get": {
+        "tags": [
+          "conta"
+        ],
+        "summary": "Export Account",
+        "description": "Contrato de exportação completa. Indisponível até integração de Auth, banco e Storage.",
+        "operationId": "export_account_conta_exportacao_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Export"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Integração indisponível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/conta": {
+      "delete": {
+        "tags": [
+          "conta"
+        ],
+        "summary": "Delete Account",
+        "description": "Exclusão integral depende de fluxo autorizado externo; atualmente retorna 503.",
+        "operationId": "delete_account_conta_delete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeletionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Integração indisponível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/anotacoes/{note_id}/anexos": {
+      "get": {
+        "tags": [
+          "anexos"
+        ],
+        "summary": "Attachments",
+        "operationId": "attachments_anotacoes__note_id__anexos_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "note_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Note Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Attachment"
+                  },
+                  "title": "Response Attachments Anotacoes  Note Id  Anexos Get"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Integração indisponível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "anexos"
+        ],
+        "summary": "Upload Attachment",
+        "description": "Corpo binário application/octet-stream; nome_arquivo na query. PDF, PNG, JPEG, GIF e WebP. Storage não integrado; limite provisório configurável.",
+        "operationId": "upload_attachment_anotacoes__note_id__anexos_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "note_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Note Id"
+            }
+          },
+          {
+            "name": "nome_arquivo",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "title": "Nome Arquivo"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Attachment"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer ausente ou inválido"
+          },
+          "404": {
+            "description": "Recurso inexistente ou não acessível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Integração indisponível",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Arquivo muito grande"
+          },
+          "415": {
+            "description": "Formato não aceito"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Assessment": {
+        "properties": {
+          "disciplina_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Disciplina Id"
+          },
+          "nome": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Nome"
+          },
+          "peso": {
+            "type": "string",
+            "title": "Peso"
+          },
+          "nota": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nota"
+          },
+          "id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "disciplina_id",
+          "nome",
+          "peso",
+          "id"
+        ],
+        "title": "Assessment"
+      },
+      "AssessmentInput": {
+        "properties": {
+          "disciplina_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Disciplina Id"
+          },
+          "nome": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Nome"
+          },
+          "peso": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Peso"
+          },
+          "nota": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nota"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "disciplina_id",
+          "nome",
+          "peso"
+        ],
+        "title": "AssessmentInput"
+      },
+      "Attachment": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Id"
+          },
+          "anotacao_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Anotacao Id"
+          },
+          "nome_arquivo": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Nome Arquivo"
+          },
+          "tamanho_bytes": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Tamanho Bytes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "anotacao_id",
+          "nome_arquivo",
+          "tamanho_bytes"
+        ],
+        "title": "Attachment"
+      },
+      "Attendance": {
+        "properties": {
+          "disciplina_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Disciplina Id"
+          },
+          "data": {
+            "type": "string",
+            "format": "date",
+            "title": "Data"
+          },
+          "aulas_no_dia": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Aulas No Dia"
+          },
+          "faltas": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Faltas"
+          },
+          "id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "disciplina_id",
+          "data",
+          "aulas_no_dia",
+          "faltas",
+          "id"
+        ],
+        "title": "Attendance"
+      },
+      "AttendanceInput": {
+        "properties": {
+          "disciplina_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Disciplina Id"
+          },
+          "data": {
+            "type": "string",
+            "format": "date",
+            "title": "Data"
+          },
+          "aulas_no_dia": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Aulas No Dia"
+          },
+          "faltas": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Faltas"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "disciplina_id",
+          "data",
+          "aulas_no_dia",
+          "faltas"
+        ],
+        "title": "AttendanceInput"
+      },
+      "AttendanceSummary": {
+        "properties": {
+          "total_aulas": {
+            "type": "integer",
+            "title": "Total Aulas"
+          },
+          "aulas_dadas": {
+            "type": "integer",
+            "title": "Aulas Dadas"
+          },
+          "faltas": {
+            "type": "integer",
+            "title": "Faltas"
+          },
+          "presenca_percentual": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Presenca Percentual"
+          },
+          "faltas_percentual": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Faltas Percentual"
+          },
+          "limite_faltas": {
+            "type": "integer",
+            "title": "Limite Faltas"
+          },
+          "faltas_restantes": {
+            "type": "integer",
+            "title": "Faltas Restantes"
+          },
+          "alerta": {
+            "type": "string",
+            "enum": [
+              "nenhum",
+              "acima_50",
+              "acima_80",
+              "limite_excedido"
+            ],
+            "title": "Alerta"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "total_aulas",
+          "aulas_dadas",
+          "faltas",
+          "presenca_percentual",
+          "faltas_percentual",
+          "limite_faltas",
+          "faltas_restantes",
+          "alerta"
+        ],
+        "title": "AttendanceSummary"
+      },
+      "Average": {
+        "properties": {
+          "media": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media"
+          },
+          "avaliacoes_lancadas": {
+            "type": "integer",
+            "title": "Avaliacoes Lancadas"
+          },
+          "avaliacoes_pendentes": {
+            "type": "integer",
+            "title": "Avaliacoes Pendentes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "media",
+          "avaliacoes_lancadas",
+          "avaliacoes_pendentes"
+        ],
+        "title": "Average"
+      },
+      "Calculation": {
+        "properties": {
+          "nota_minima": {
+            "type": "string",
+            "title": "Nota Minima"
+          },
+          "impossivel": {
+            "type": "boolean",
+            "title": "Impossivel"
+          },
+          "media_maxima": {
+            "type": "string",
+            "title": "Media Maxima"
+          },
+          "media_alvo": {
+            "type": "string",
+            "title": "Media Alvo"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nota_minima",
+          "impossivel",
+          "media_maxima",
+          "media_alvo"
+        ],
+        "title": "Calculation"
+      },
+      "CalculationInput": {
+        "properties": {
+          "avaliacoes_lancadas": {
+            "items": {
+              "$ref": "#/components/schemas/WeightedGrade"
+            },
+            "type": "array",
+            "maxItems": 1000,
+            "title": "Avaliacoes Lancadas"
+          },
+          "peso_proxima": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Peso Proxima"
+          },
+          "nota_maxima": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Nota Maxima"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "avaliacoes_lancadas",
+          "peso_proxima",
+          "nota_maxima"
+        ],
+        "title": "CalculationInput"
+      },
+      "CalendarItem": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Id"
+          },
+          "data": {
+            "type": "string",
+            "format": "date",
+            "title": "Data"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "feriado",
+              "semana_provas",
+              "inicio",
+              "fim"
+            ],
+            "title": "Tipo"
+          },
+          "descricao": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Descricao"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "data",
+          "tipo",
+          "descricao"
+        ],
+        "title": "CalendarItem"
+      },
+      "DeletionRequest": {
+        "properties": {
+          "confirmar_exclusao": {
+            "type": "boolean",
+            "const": true,
+            "title": "Confirmar Exclusao"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "confirmar_exclusao"
+        ],
+        "title": "DeletionRequest"
+      },
+      "Error": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "title": "Error"
+      },
+      "Event": {
+        "properties": {
+          "disciplina_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1,
+                "pattern": "^\\S+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disciplina Id"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "prova",
+              "trabalho",
+              "apresentacao",
+              "aula",
+              "evento"
+            ],
+            "title": "Tipo"
+          },
+          "titulo": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Titulo"
+          },
+          "inicio": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Inicio"
+          },
+          "fim": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fim"
+          },
+          "id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "tipo",
+          "titulo",
+          "inicio",
+          "fim",
+          "id"
+        ],
+        "title": "Event"
+      },
+      "EventInput": {
+        "properties": {
+          "disciplina_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1,
+                "pattern": "^\\S+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disciplina Id"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "prova",
+              "trabalho",
+              "apresentacao",
+              "aula",
+              "evento"
+            ],
+            "title": "Tipo"
+          },
+          "titulo": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Titulo"
+          },
+          "inicio": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Inicio"
+          },
+          "fim": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fim"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "tipo",
+          "titulo",
+          "inicio",
+          "fim"
+        ],
+        "title": "EventInput"
+      },
+      "Export": {
+        "properties": {
+          "usuario_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Usuario Id"
+          },
+          "gerado_em": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Gerado Em"
+          },
+          "dados": {
+            "additionalProperties": {
+              "items": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "type": "object",
+            "title": "Dados"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "usuario_id",
+          "gerado_em",
+          "dados"
+        ],
+        "title": "Export"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Lesson": {
+        "properties": {
+          "horario_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Horario Id"
+          },
+          "disciplina_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Disciplina Id"
+          },
+          "data": {
+            "type": "string",
+            "format": "date",
+            "title": "Data"
+          },
+          "hora_inicio": {
+            "type": "string",
+            "format": "time",
+            "title": "Hora Inicio"
+          },
+          "hora_fim": {
+            "type": "string",
+            "format": "time",
+            "title": "Hora Fim"
+          },
+          "sala": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Sala"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "horario_id",
+          "disciplina_id",
+          "data",
+          "hora_inicio",
+          "hora_fim",
+          "sala"
+        ],
+        "title": "Lesson"
+      },
+      "Note": {
+        "properties": {
+          "disciplina_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1,
+                "pattern": "^\\S+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disciplina Id"
+          },
+          "evento_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1,
+                "pattern": "^\\S+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evento Id"
+          },
+          "titulo": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Titulo"
+          },
+          "corpo": {
+            "type": "string",
+            "maxLength": 100000,
+            "title": "Corpo"
+          },
+          "id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "titulo",
+          "corpo",
+          "id"
+        ],
+        "title": "Note"
+      },
+      "NoteInput": {
+        "properties": {
+          "disciplina_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1,
+                "pattern": "^\\S+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disciplina Id"
+          },
+          "evento_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1,
+                "pattern": "^\\S+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evento Id"
+          },
+          "titulo": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Titulo"
+          },
+          "corpo": {
+            "type": "string",
+            "maxLength": 100000,
+            "title": "Corpo"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "titulo",
+          "corpo"
+        ],
+        "title": "NoteInput"
+      },
+      "Onboarding": {
+        "properties": {
+          "semestres": {
+            "items": {
+              "$ref": "#/components/schemas/Semester"
+            },
+            "type": "array",
+            "title": "Semestres"
+          },
+          "disciplinas": {
+            "items": {
+              "$ref": "#/components/schemas/Subject"
+            },
+            "type": "array",
+            "title": "Disciplinas"
+          },
+          "horarios": {
+            "items": {
+              "$ref": "#/components/schemas/Schedule"
+            },
+            "type": "array",
+            "title": "Horarios"
+          },
+          "docentes": {
+            "items": {
+              "$ref": "#/components/schemas/Teacher"
+            },
+            "type": "array",
+            "title": "Docentes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "semestres",
+          "disciplinas",
+          "horarios",
+          "docentes"
+        ],
+        "title": "Onboarding"
+      },
+      "Reminder": {
+        "properties": {
+          "evento_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Evento Id"
+          },
+          "canal": {
+            "type": "string",
+            "const": "email",
+            "title": "Canal"
+          },
+          "enviar_em": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Enviar Em"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "evento_id",
+          "canal",
+          "enviar_em"
+        ],
+        "title": "Reminder"
+      },
+      "ReminderInput": {
+        "properties": {
+          "antecedencia_dias": {
+            "items": {
+              "type": "integer",
+              "minimum": 0.0
+            },
+            "type": "array",
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Antecedencia Dias",
+            "default": [
+              3,
+              1
+            ]
+          },
+          "canal": {
+            "type": "string",
+            "const": "email",
+            "title": "Canal",
+            "default": "email"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ReminderInput"
+      },
+      "Schedule": {
+        "properties": {
+          "disciplina_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Disciplina Id"
+          },
+          "dia_semana": {
+            "type": "integer",
+            "maximum": 6.0,
+            "minimum": 0.0,
+            "title": "Dia Semana",
+            "description": "Segunda=0; domingo=6."
+          },
+          "hora_inicio": {
+            "type": "string",
+            "format": "time",
+            "title": "Hora Inicio"
+          },
+          "hora_fim": {
+            "type": "string",
+            "format": "time",
+            "title": "Hora Fim"
+          },
+          "sala": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Sala"
+          },
+          "id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "disciplina_id",
+          "dia_semana",
+          "hora_inicio",
+          "hora_fim",
+          "sala",
+          "id"
+        ],
+        "title": "Schedule"
+      },
+      "ScheduleInput": {
+        "properties": {
+          "disciplina_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Disciplina Id"
+          },
+          "dia_semana": {
+            "type": "integer",
+            "maximum": 6.0,
+            "minimum": 0.0,
+            "title": "Dia Semana",
+            "description": "Segunda=0; domingo=6."
+          },
+          "hora_inicio": {
+            "type": "string",
+            "format": "time",
+            "title": "Hora Inicio"
+          },
+          "hora_fim": {
+            "type": "string",
+            "format": "time",
+            "title": "Hora Fim"
+          },
+          "sala": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Sala"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "disciplina_id",
+          "dia_semana",
+          "hora_inicio",
+          "hora_fim",
+          "sala"
+        ],
+        "title": "ScheduleInput"
+      },
+      "Semester": {
+        "properties": {
+          "nome": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Nome"
+          },
+          "data_inicio": {
+            "type": "string",
+            "format": "date",
+            "title": "Data Inicio"
+          },
+          "data_fim": {
+            "type": "string",
+            "format": "date",
+            "title": "Data Fim"
+          },
+          "ativo": {
+            "type": "boolean",
+            "title": "Ativo"
+          },
+          "id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nome",
+          "data_inicio",
+          "data_fim",
+          "ativo",
+          "id"
+        ],
+        "title": "Semester"
+      },
+      "SemesterInput": {
+        "properties": {
+          "nome": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Nome"
+          },
+          "data_inicio": {
+            "type": "string",
+            "format": "date",
+            "title": "Data Inicio"
+          },
+          "data_fim": {
+            "type": "string",
+            "format": "date",
+            "title": "Data Fim"
+          },
+          "ativo": {
+            "type": "boolean",
+            "title": "Ativo"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nome",
+          "data_inicio",
+          "data_fim",
+          "ativo"
+        ],
+        "title": "SemesterInput"
+      },
+      "Situation": {
+        "properties": {
+          "criterios_acionados": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "aprovado",
+                "em_risco",
+                "reprovado"
+              ]
+            },
+            "type": "array",
+            "title": "Criterios Acionados"
+          },
+          "situacao": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "aprovado",
+                  "em_risco",
+                  "reprovado"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Situacao"
+          },
+          "requer_definicao": {
+            "type": "boolean",
+            "title": "Requer Definicao"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "criterios_acionados",
+          "situacao",
+          "requer_definicao"
+        ],
+        "title": "Situation"
+      },
+      "SituationInput": {
+        "properties": {
+          "presenca_percentual": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 100.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Presenca Percentual"
+          },
+          "faltas": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Faltas"
+          },
+          "limite_faltas": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Limite Faltas"
+          },
+          "media": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media"
+          },
+          "media_maxima_possivel": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media Maxima Possivel"
+          },
+          "nota_minima_proxima": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nota Minima Proxima"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "presenca_percentual",
+          "faltas",
+          "limite_faltas"
+        ],
+        "title": "SituationInput"
+      },
+      "Subject": {
+        "properties": {
+          "semestre_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Semestre Id"
+          },
+          "docente_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1,
+                "pattern": "^\\S+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Docente Id"
+          },
+          "nome": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Nome"
+          },
+          "sigla": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Sigla"
+          },
+          "total_aulas": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Total Aulas"
+          },
+          "id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "semestre_id",
+          "nome",
+          "sigla",
+          "total_aulas",
+          "id"
+        ],
+        "title": "Subject"
+      },
+      "SubjectInput": {
+        "properties": {
+          "semestre_id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Semestre Id"
+          },
+          "docente_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1,
+                "pattern": "^\\S+$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Docente Id"
+          },
+          "nome": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Nome"
+          },
+          "sigla": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Sigla"
+          },
+          "total_aulas": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Total Aulas"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "semestre_id",
+          "nome",
+          "sigla",
+          "total_aulas"
+        ],
+        "title": "SubjectInput"
+      },
+      "Teacher": {
+        "properties": {
+          "nome": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Nome"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 254,
+            "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+            "title": "Email"
+          },
+          "telefone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telefone"
+          },
+          "observacoes": {
+            "type": "string",
+            "maxLength": 20000,
+            "title": "Observacoes",
+            "default": ""
+          },
+          "id": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "pattern": "^\\S+$",
+            "title": "Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nome",
+          "email",
+          "id"
+        ],
+        "title": "Teacher"
+      },
+      "TeacherInput": {
+        "properties": {
+          "nome": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1,
+            "pattern": ".*\\S.*",
+            "title": "Nome"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 254,
+            "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+            "title": "Email"
+          },
+          "telefone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telefone"
+          },
+          "observacoes": {
+            "type": "string",
+            "maxLength": 20000,
+            "title": "Observacoes",
+            "default": ""
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nome",
+          "email"
+        ],
+        "title": "TeacherInput"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WeightedGrade": {
+        "properties": {
+          "nota": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Nota"
+          },
+          "peso": {
+            "anyOf": [
+              {
+                "type": "number",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "title": "Peso"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nota",
+          "peso"
+        ],
+        "title": "WeightedGrade"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
