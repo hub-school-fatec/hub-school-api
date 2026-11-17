@@ -1,57 +1,70 @@
-from functools import lru_cache
+import threading
+import time
 
-from fastapi import HTTPException, status
-from jwt import PyJWKClient
+import httpx
 import jwt
+from jwt import PyJWK
 
-from app.core.config import settings
-
-
-JWT_ALGORITHM = "ES256"
-JWT_AUDIENCE = "authenticated"
+from app.core.config import get_settings
 
 
-@lru_cache(maxsize=8)
-def get_jwks_client(url: str, lifespan: int, timeout: int) -> PyJWKClient:
-    # Cache the set, not individual keys indefinitely; unknown kid triggers refresh.
-    return PyJWKClient(url, cache_jwk_set=True, lifespan=lifespan, timeout=timeout)
+class AuthenticationError(Exception):
+    pass
 
 
-def _unauthorized() -> HTTPException:
-    return HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Invalid or missing authentication credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+_lock = threading.Lock()
+_jwks_cache: dict[str, tuple[float, dict]] = {}
+_JWKS_TTL_SECONDS = 300
+_JWKS_TIMEOUT_SECONDS = 5
+
+
+def _get_jwks(project_url: str) -> dict:
+    now = time.monotonic()
+    with _lock:
+        cached = _jwks_cache.get(project_url)
+        if cached and cached[0] > now:
+            return cached[1]
+        try:
+            response = httpx.get(
+                f"{project_url}/auth/v1/.well-known/jwks.json",
+                timeout=_JWKS_TIMEOUT_SECONDS,
+            )
+            response.raise_for_status()
+            jwks = response.json()
+            if not isinstance(jwks, dict) or not isinstance(jwks.get("keys"), list):
+                raise ValueError("Invalid JWKS")
+        except (httpx.HTTPError, ValueError):
+            raise AuthenticationError from None
+        _jwks_cache.clear()
+        _jwks_cache[project_url] = (time.monotonic() + _JWKS_TTL_SECONDS, jwks)
+        return jwks
 
 
 def validate_access_token(token: str) -> str:
-    if not settings.supabase_url or not settings.supabase_jwt_issuer:
-        raise _unauthorized()
-
-    jwks_url = (
-        f"{settings.supabase_url.rstrip('/')}/auth/v1/.well-known/jwks.json"
-    )
-
+    settings = get_settings()
+    project_url = settings.auth_project_url()
+    if not project_url:
+        raise AuthenticationError
     try:
         header = jwt.get_unverified_header(token)
-        if header.get('alg') != JWT_ALGORITHM or not isinstance(header.get('kid'), str) or not header['kid'].strip():
-            raise _unauthorized()
-        jwks_client = get_jwks_client(jwks_url, settings.jwks_cache_seconds, settings.jwks_timeout_seconds)
-        signing_key = jwks_client.get_signing_key_from_jwt(token)
-        payload = jwt.decode(
-            token,
-            signing_key.key,
-            algorithms=[JWT_ALGORITHM],
-            audience=JWT_AUDIENCE,
-            issuer=settings.supabase_jwt_issuer,
-            options={"require": ["exp", "iss", "aud", "sub"]},
+        kid = header.get("kid")
+        if header.get("alg") != "ES256" or not isinstance(kid, str) or not kid:
+            raise AuthenticationError
+        keys = [key for key in _get_jwks(project_url)["keys"]
+                if isinstance(key, dict) and key.get("kid") == kid
+                and key.get("kty") == "EC" and key.get("crv") == "P-256"
+                and key.get("alg", "ES256") == "ES256"]
+        if len(keys) != 1:
+            raise AuthenticationError
+        public_key = PyJWK.from_dict(keys[0], algorithm="ES256").key
+        claims = jwt.decode(
+            token, public_key, algorithms=["ES256"],
+            issuer=settings.supabase_jwt_issuer, audience="authenticated",
+            options={"require": ["exp", "iss", "aud", "sub"]}, leeway=5,
         )
-    except (jwt.PyJWTError, ValueError):
-        raise _unauthorized() from None
-
-    subject = payload.get("sub")
-    if not isinstance(subject, str) or not subject.strip():
-        raise _unauthorized()
-
-    return subject
+        subject = claims["sub"]
+        if not isinstance(subject, str) or not subject.strip():
+            raise AuthenticationError
+        return subject
+    except (jwt.PyJWTError, ValueError, TypeError, KeyError, AuthenticationError):
+        raise AuthenticationError from None
